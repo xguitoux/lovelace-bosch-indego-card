@@ -1,11 +1,11 @@
-# xiaomi-vacuum-card
+# bosch-indego-card
 
-Simple card for various robot vacuums in Home Assistant's Lovelace UI
+Simple card for your bosch indego mower in Home Assistant's Lovelace UI
 
-[![GH-release](https://img.shields.io/github/v/release/benct/lovelace-xiaomi-vacuum-card.svg?style=flat-square)](https://github.com/benct/lovelace-xiaomi-vacuum-card/releases)
-[![GH-downloads](https://img.shields.io/github/downloads/benct/lovelace-xiaomi-vacuum-card/total?style=flat-square)](https://github.com/benct/lovelace-xiaomi-vacuum-card/releases)
-[![GH-last-commit](https://img.shields.io/github/last-commit/benct/lovelace-xiaomi-vacuum-card.svg?style=flat-square)](https://github.com/benct/lovelace-xiaomi-vacuum-card/commits/master)
-[![GH-code-size](https://img.shields.io/github/languages/code-size/benct/lovelace-xiaomi-vacuum-card.svg?color=red&style=flat-square)](https://github.com/benct/lovelace-xiaomi-vacuum-card)
+[![GH-release](https://img.shields.io/github/v/release/xguitoux/lovelace-bosch-indego-card.svg?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/releases)
+[![GH-downloads](https://img.shields.io/github/downloads/xguitoux/lovelace-bosch-indego-card/total?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/releases)
+[![GH-last-commit](https://img.shields.io/github/last-commit/xguitoux/lovelace-bosch-indego-card.svg?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/commits/master)
+[![GH-code-size](https://img.shields.io/github/languages/code-size/xguitoux/lovelace-bosch-indego-card.svg?color=red&style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square)](https://github.com/hacs)
 
 Integrated support for most vacuums from the following brands/models:
@@ -13,38 +13,36 @@ Xiaomi, Roomba, Neato, Robovac, Valetudo, Ecovacs, Deebot
 
 ## Installation
 
-Manually add [xiaomi-vacuum-card.js](https://raw.githubusercontent.com/benct/lovelace-xiaomi-vacuum-card/master/xiaomi-vacuum-card.js)
-to your `<config>/www/` folder and add the following to the `configuration.yaml` file:
+Manually add [bosch-indego-card.js](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/bosch-indego-card.js)
+to your `<config>/www/` folder and add the link to the resource file (Manage Resource files menu) :
 ```yaml
-lovelace:
-  resources:
-    - url: /local/xiaomi-vacuum-card.js?v=4.2.0
-      type: module
+url: /local/bosch-indego-card.js?v=1.0.0
 ```
+Resource type = Javascript file
 
 _OR_ install using [HACS](https://hacs.xyz/) and add this (if in YAML mode):
 ```yaml
 lovelace:
   resources:
-    - url: /hacsfiles/lovelace-xiaomi-vacuum-card/xiaomi-vacuum-card.js
+    - url: /hacsfiles/lovelace-bosch-indego-card/bosch-indego-card.js
       type: module
 ```
 
 The above configuration can be managed directly in the Configuration -> Lovelace Dashboards -> Resources panel when not using YAML mode,
 or added by clicking the "Add to lovelace" button on the HACS dashboard after installing the plugin.
 
-If you want to use the vacuum background image, download and add
-[img/vacuum.png](https://raw.githubusercontent.com/benct/lovelace-xiaomi-vacuum-card/master/img/vacuum.png)
+If you want to use the Bosch S350 background image, download and add
+[img/s350.jpg](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/img/s350.jpg)
 to `<config>/www/img/` or configure your own preferred path.
 
 ## Configuration
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
-| type | string | **Required** | `custom:xiaomi-vacuum-card`
+| type | string | **Required** | `custom:bosch-indego-card`
 | entity | string | **Required** | `vacuum.my_xiaomi_vacuum`
 | name | string/bool | `friendly_name` | Override friendly name (set to `false` to hide)
-| image | string/bool | `false` | Set path/filename of background image (i.e. `/local/img/vacuum.png`)
+| image | string/bool | `false` | Set path/filename of background image (i.e. `/local/img/s350.jpg`)
 | state | [Entity Data](#entity data) | *(see below)* | Set to `false` to hide all states
 | attributes | [Entity Data](#entity data) | *(see below)* | Set to `false` to hide all attributes
 | buttons | [Button Data](#button data) | *(see below)* | Set to `false` to hide button row
@@ -90,24 +88,24 @@ If you want any other vendors to be added, feel free to open an issue or contrib
 
 ## Screenshots
 
-![xiaomi-vacuum-card](https://raw.githubusercontent.com/benct/lovelace-xiaomi-vacuum-card/master/examples/default.png)
+![bosch-indego-card](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/default.png)
 
-![xiaomi-vacuum-card-no-title](https://raw.githubusercontent.com/benct/lovelace-xiaomi-vacuum-card/master/examples/no-title.png)
+![bosch-indego-card-no-title](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/no-title.png)
 
-![xiaomi-vacuum-card-image](https://raw.githubusercontent.com/benct/lovelace-xiaomi-vacuum-card/master/examples/with-image.png)
+![bosch-indego-card-image](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/with-image.png)
 
-![xiaomi-vacuum-card-no-buttons](https://raw.githubusercontent.com/benct/lovelace-xiaomi-vacuum-card/master/examples/no-buttons.png)
+![bosch-indego-card-no-buttons](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/no-buttons.png)
 
 ## Examples
 
 Basic configuration:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
 ```
 
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   image: /local/custom/folder/background.png
   name: My Vacuum
@@ -116,7 +114,7 @@ Basic configuration:
 
 Hide state, attributes and/or buttons:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   state: false
   attributes: false
@@ -125,7 +123,7 @@ Hide state, attributes and/or buttons:
 
 Hide specific state values, attributes and/or buttons:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   state:
     mode: false
@@ -139,7 +137,7 @@ Hide specific state values, attributes and/or buttons:
 
 Customize specific state values, attributes and/or buttons:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   state:
     status:
@@ -162,7 +160,7 @@ Customize specific state values, attributes and/or buttons:
 
 Show default clean spot button:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   buttons:
     spot:
@@ -171,7 +169,7 @@ Show default clean spot button:
 
 Add custom attributes:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   attributes:
     clean_area:
@@ -182,7 +180,7 @@ Add custom attributes:
 
 Add custom buttons and service calls:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   buttons:
     new_button:
@@ -195,7 +193,7 @@ Add custom buttons and service calls:
 
 Translations:
 ```yaml
-- type: custom:xiaomi-vacuum-card
+- type: custom:bosch-indego-card
   entity: vacuum.xiaomi_vacuum_cleaner
   attributes:
     main_brush:
@@ -224,7 +222,7 @@ or any of its subsidiaries or its affiliates. The official Xiaomi website can be
 
 ## My cards
 
-[xiaomi-vacuum-card](https://github.com/benct/lovelace-xiaomi-vacuum-card) | 
+[bosch-indego-card](https://github.com/xguitoux/lovelace-bosch-indego-card) | 
 [multiple-entity-row](https://github.com/benct/lovelace-multiple-entity-row) | 
 [github-entity-row](https://github.com/benct/lovelace-github-entity-row) | 
 [battery-entity-row](https://github.com/benct/lovelace-battery-entity-row) | 
