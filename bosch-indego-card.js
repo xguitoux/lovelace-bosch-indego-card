@@ -1,6 +1,7 @@
+/*jshint esversion: 6 */
 ((LitElement) => {
     console.info(
-        '%c XIAOMI-VACUUM-CARD %c 4.2.0 ',
+        '%c BOSCH-INDEGO-CARD %c 0.0.1 ',
         'color: cyan; background: black; font-weight: bold;',
         'color: darkblue; background: white; font-weight: bold;',
     );
@@ -8,38 +9,38 @@
     const state = {
         status: {
             key: 'status',
-            icon: 'mdi:robot-vacuum',
+            icon: 'mdi:robot-mower-outline',
         },
         battery: {
-            key: 'battery_level',
+            key: 'battery',
             unit: '%',
             icon: 'mdi:battery-charging-80',
         },
         mode: {
-            key: 'fan_speed',
-            icon: 'mdi:fan',
+            key: 'mode',
+            icon: 'mdi:map-marker-path',
         },
     };
 
     const attributes = {
-        main_brush: {
-            key: 'main_brush_left',
-            label: 'Main Brush: ',
-            unit: ' h',
+        battery: {
+            key: 'battery',
+            label: 'Battery: ',
+            unit: ' %',
         },
-        side_brush: {
-            key: 'side_brush_left',
-            label: 'Side Brush: ',
-            unit: ' h',
+        lawn_mowed: {
+            key: 'lawn_mowed',
+            label: 'Lawn Mowed: ',
+            unit: ' %',
         },
-        filter: {
-            key: 'filter_left',
-            label: 'Filter: ',
-            unit: ' h',
+        last_completed: {
+            key: 'last_completed',
+            label: 'Last mow completed: ',
+            unit: ' days ago',
         },
-        sensor: {
-            key: 'sensor_dirty_left',
-            label: 'Sensor: ',
+        mowtime_total: {
+            key: 'mowtime_total',
+            label: 'MowTime total: ',
             unit: ' h',
         },
     };
@@ -48,158 +49,31 @@
         start: {
             label: 'Start',
             icon: 'mdi:play',
-            service: 'vacuum.start',
+            service: 'indego.command',
+            service_data: 'command:mow',
         },
         pause: {
             label: 'Pause',
             icon: 'mdi:pause',
-            service: 'vacuum.pause',
-        },
-        stop: {
-            label: 'Stop',
-            icon: 'mdi:stop',
-            service: 'vacuum.stop',
-        },
-        spot: {
-            show: false,
-            label: 'Clean Spot',
-            icon: 'mdi:broom',
-            service: 'vacuum.clean_spot',
-        },
-        locate: {
-            label: 'Locate',
-            icon: 'mdi:map-marker',
-            service: 'vacuum.locate',
+            service: 'indego.command',
+            service_data: 'command:pause',
         },
         return: {
-            label: 'Return to Base',
+            label: 'Return to dock',
             icon: 'mdi:home-map-marker',
-            service: 'vacuum.return_to_base',
-        },
+            service: 'indego.command',
+            service_data: 'command:returnToDock',
+        }
     };
 
     const compute = {
-        trueFalse: v => (v === true ? 'Yes' : (v === false ? 'No' : '-')),
-        divide100: v => Math.round(Number(v) / 100),
-    }
-
-    const vendors = {
-        xiaomi: {},
-        xiaomi_mi: {
-            attributes: {
-                main_brush: {key: 'main_brush_hours'},
-                side_brush: {key: 'side_brush_hours'},
-                filter: {key: 'hypa_hours'},
-                sensor: {
-                    key: 'mop_hours',
-                    label: 'Mop: ',
-                },
-            },
-        },
-        valetudo: {
-            state: {
-                status: {
-                    key: 'state',
-                },
-            },
-            attributes: {
-                main_brush: {key: 'mainBrush'},
-                side_brush: {key: 'sideBrush'},
-                filter: {key: 'filter'},
-                sensor: {key: 'sensor'},
-            },
-        },
-        roomba: {
-            attributes: {
-                main_brush: false,
-                side_brush: false,
-                filter: false,
-                sensor: false,
-                bin_present: {
-                    key: 'bin_present',
-                    label: 'Bin Present: ',
-                    compute: compute.trueFalse,
-                },
-                bin_full: {
-                    key: 'bin_full',
-                    label: 'Bin Full: ',
-                    compute: compute.trueFalse,
-                },
-            },
-        },
-        robovac: {
-            attributes: false,
-            buttons: {
-                stop: {show: false},
-                spot: {show: true},
-            },
-        },
-        ecovacs: {
-            attributes: false,
-            buttons: {
-                start: {service: 'vacuum.turn_on'},
-                pause: {service: 'vacuum.stop'},
-                stop: {service: 'vacuum.turn_off', show: false},
-                spot: {show: true},
-            },
-        },
-        deebot: {
-            buttons: {
-                start: {service: 'vacuum.turn_on'},
-                pause: {service: 'vacuum.stop'},
-                stop: {service: 'vacuum.turn_off'},
-            },
-            attributes: {
-                main_brush: {
-                    key: 'component_main_brush',
-                    compute: compute.divide100,
-                },
-                side_brush: {
-                    key: 'component_side_brush',
-                    compute: compute.divide100,
-                },
-                filter: {
-                    key: 'component_filter',
-                    compute: compute.divide100,
-                },
-                sensor: false,
-            },
-        },
-        deebot_slim: {
-            buttons: {
-                start: {service: 'vacuum.turn_on'},
-                pause: {service: 'vacuum.stop'},
-                stop: {service: 'vacuum.turn_off'},
-            },
-            attributes: {
-                main_brush: false,
-                side_brush: {key: 'component_side_brush'},
-                filter: {key: 'component_filter'},
-                sensor: false,
-            },
-        },
-        neato: {
-            state: {
-                mode: false,
-            },
-            attributes: {
-                main_brush: false,
-                side_brush: false,
-                filter: false,
-                sensor: false,
-                clean_area: {
-                    key: 'clean_area',
-                    label: 'Cleaned area: ',
-                    unit: ' m2',
-                },
-            },
-        },
+        trueFalse: v => (v === true ? 'Yes' : (v === false ? 'No' : '-'))
     };
 
     const html = LitElement.prototype.html;
     const css = LitElement.prototype.css;
 
-    class XiaomiVacuumCard extends LitElement {
+    class BoschIndegoCard extends LitElement {
 
         static get properties() {
             return {
@@ -338,10 +212,6 @@
 
         setConfig(config) {
             if (!config.entity) throw new Error('Please define an entity.');
-            if (config.entity.split('.')[0] !== 'vacuum') throw new Error('Please define a vacuum entity.');
-            if (config.vendor && !config.vendor in vendors) throw new Error('Please define a valid vendor.');
-
-            const vendor = vendors[config.vendor] || vendors.xiaomi;
 
             this.config = {
                 name: config.name,
@@ -352,9 +222,9 @@
                     attributes: config.attributes !== false,
                     buttons: config.buttons !== false,
                 },
-                buttons: this.deepMerge(buttons, vendor.buttons, config.buttons),
-                state: this.deepMerge(state, vendor.state, config.state),
-                attributes: this.deepMerge(attributes, vendor.attributes, config.attributes),
+                buttons: this.deepMerge(buttons, config.buttons),
+                state: this.deepMerge(state, config.state),
+                attributes: this.deepMerge(attributes, config.attributes),
                 styles: {
                     background: config.image ? `background-image: url('${config.image}'); color: white; text-shadow: 0 0 10px black;` : '',
                     icon: `color: ${config.image ? 'white' : 'var(--paper-item-icon-color)'};`,
@@ -413,5 +283,5 @@
         }
     }
 
-    customElements.define('xiaomi-vacuum-card', XiaomiVacuumCard);
+    customElements.define('bosch-indego-card', BoschIndegoCard);
 })(window.LitElement || Object.getPrototypeOf(customElements.get("hui-masonry-view") || customElements.get("hui-view")));
