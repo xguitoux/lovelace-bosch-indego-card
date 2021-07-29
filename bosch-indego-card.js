@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 ((LitElement) => {
     console.info(
-        '%c BOSCH-INDEGO-CARD %c 0.0.6 ',
+        '%c BOSCH-INDEGO-CARD %c 0.0.7 ',
         'color: cyan; background: black; font-weight: bold;',
         'color: darkblue; background: white; font-weight: bold;',
     );
@@ -287,3 +287,12 @@
 
     customElements.define('bosch-indego-card', BoschIndegoCard);
 })(window.LitElement || Object.getPrototypeOf(customElements.get("hui-masonry-view") || customElements.get("hui-view")));
+
+// Puts card into the UI card picker dialog
+(window).customCards = (window).customCards || [];
+(window).customCards.push({
+  type: 'bosch-indego-card',
+  name: 'Bosch Indego Card',
+  preview: true,
+  description: 'This Lovelace custom card displays your indego mower information provided by the Indego Integration.',
+});
