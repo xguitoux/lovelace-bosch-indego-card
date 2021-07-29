@@ -25,6 +25,7 @@ url: /local/bosch-indego-card.js?v=1.0.0
 ```
 Resource type = **Javascript file**
 
+
 _OR_ install using [HACS](https://hacs.xyz/) and add this (if in YAML mode):
 Add this repository (https://github.com/xguitoux/lovelace-bosch-indego-card) as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/)
 
