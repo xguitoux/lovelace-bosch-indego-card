@@ -12,20 +12,21 @@ based on the work of benct https://github.com/benct/lovelace-xiaomi-vacuum-card
 
 Integrated support for Bosch Indego mowers supported on https://github.com/jm-73/Indego
 
-## Installation
+## Integration installation
 
-First install integration from https://github.com/jm-73/Indego
+**First install integration from https://github.com/jm-73/Indego**
 
-https://github.com/jm-73/Indego
+## Card installation
 
 Manually add [bosch-indego-card.js](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/bosch-indego-card.js)
 to your `<config>/www/` folder and add the link to the resource file (Manage Resource files menu) :
 ```yaml
 url: /local/bosch-indego-card.js?v=1.0.0
 ```
-Resource type = Javascript file
+Resource type = **Javascript file**
 
 ----- TODO ----
+
 _OR_ install using [HACS](https://hacs.xyz/) and add this (if in YAML mode):
 ```yaml
 lovelace:
@@ -33,7 +34,7 @@ lovelace:
     - url: /hacsfiles/lovelace-bosch-indego-card/bosch-indego-card.js
       type: module
 ```
----- TODO ----
+------------------------
 
 The above configuration can be managed directly in the Configuration -> Lovelace Dashboards -> Resources panel when not using YAML mode,
 or added by clicking the "Add to lovelace" button on the HACS dashboard after installing the plugin.
@@ -98,9 +99,9 @@ Check if your Hass configuration is valid and reload template entitys (There is 
 
 ### Entity Data
 
-Default vacuum attributes under each list:
-- `state` (**left list**) include `status`, `battery` and `mode`.
-- `attributes` (**right list**) include `main_brush`, `side_brush`, `filter` and `sensor`.
+Default indego attributes under each list:
+- `state` (**left list**) include `status`, `battery` and `lawn_mowed`.
+- `attributes` (**right list**) include `mow_mode`, `mowtime_total`, `next_mow` and `last_completed`.
 
 See [examples](#examples) on how to customize, hide or add custom attributes.
 
@@ -111,18 +112,16 @@ See [examples](#examples) on how to customize, hide or add custom attributes.
 | label | string | | Optional label text
 | unit | string | | Optional unit
 
-### Button Data
+### Button Data --- TO COMPLETE
 
-Default buttons include `start`, `pause`, `stop`, `spot` (hidden), `locate` and `return`.
+Default buttons include `start`, `pause`, and `return`.
 See [examples](#examples) on how to customize, hide or add custom buttons/actions.
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | icon | string | **Required** | Show or hide stop button
-| service | string | **Required** | Service to call (i.e `vacuum.start`)
 | show | bool | `true` | Show or hide button
 | label | string | | Optional label on hover
-| service_data | object | | Data applied to the service call
 
 ## Screenshots
 
