@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 ((LitElement) => {
     console.info(
-        '%c BOSCH-INDEGO-CARD %c 0.0.1 ',
+        '%c BOSCH-INDEGO-CARD %c 0.0.6 ',
         'color: cyan; background: black; font-weight: bold;',
         'color: darkblue; background: white; font-weight: bold;',
     );
@@ -16,27 +16,28 @@
             unit: '%',
             icon: 'mdi:battery-charging-80',
         },
-        mode: {
-            key: 'mode',
-            icon: 'mdi:map-marker-path',
+        lawn_mowed: {
+            key: 'lawn_mowed',
+            unit: '%',
+            icon: 'mdi:grass',
         },
     };
 
     const attributes = {
-        battery: {
-            key: 'battery',
-            label: 'Battery: ',
-            unit: ' %',
+        mow_mode: {
+            key: 'mow_mode',
+            label: 'Mow Mode: ',
+            unit: '',
         },
-        lawn_mowed: {
-            key: 'lawn_mowed',
-            label: 'Lawn Mowed: ',
-            unit: ' %',
+        next_mow: {
+            key: 'next_mow',
+            label: 'Next Mow: ',
+            unit: ' ',
         },
         last_completed: {
             key: 'last_completed',
             label: 'Last mow completed: ',
-            unit: ' days ago',
+            unit: ' ago',
         },
         mowtime_total: {
             key: 'mowtime_total',
@@ -147,7 +148,7 @@
               <div class="flex">
                 ${Object.values(this.config.buttons).filter(v => v).map(this.renderButton.bind(this))}
               </div>` : null}
-            </ha-card>` : html`<ha-card style="padding: 8px 16px">Entity '${this.config.entity}' not available...</ha-card>`;
+            </ha-card>` : html`<ha-card style="padding: 8px 11px">Entity '${this.config.entity}' not available...</ha-card>`;
         }
 
         renderAttribute(data) {
@@ -182,7 +183,7 @@
                     @click="${() => this.callService(data.service, data.service_data)}"
                     icon="${data.icon}"
                     title="${data.label || ''}"
-                    style="${this.config.styles.icon}"></ha-icon-button>`
+                    style="${this.config.styles.icon}${this.config.styles.button}"></ha-icon-button>`
                 : null;
         }
 
@@ -228,6 +229,7 @@
                 styles: {
                     background: config.image ? `background-image: url('${config.image}'); color: white; text-shadow: 0 0 10px black;` : '',
                     icon: `color: ${config.image ? 'white' : 'var(--paper-item-icon-color)'};`,
+                    button: `--mdc-icon-size: 40px`,
                     content: `padding: ${config.name !== false ? '8px' : '16px'} 16px ${config.buttons !== false ? '8px' : '16px'};`,
                 },
             };

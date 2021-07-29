@@ -2,16 +2,21 @@
 
 Simple card for your bosch indego mower in Home Assistant's Lovelace UI
 
+based on the work of benct https://github.com/benct/lovelace-xiaomi-vacuum-card
+
 [![GH-release](https://img.shields.io/github/v/release/xguitoux/lovelace-bosch-indego-card.svg?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/releases)
 [![GH-downloads](https://img.shields.io/github/downloads/xguitoux/lovelace-bosch-indego-card/total?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/releases)
 [![GH-last-commit](https://img.shields.io/github/last-commit/xguitoux/lovelace-bosch-indego-card.svg?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/commits/master)
 [![GH-code-size](https://img.shields.io/github/languages/code-size/xguitoux/lovelace-bosch-indego-card.svg?color=red&style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card)
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square)](https://github.com/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-todo-red.svg?style=flat-square)](https://github.com/hacs)
 
-Integrated support for most vacuums from the following brands/models:
-Xiaomi, Roomba, Neato, Robovac, Valetudo, Ecovacs, Deebot
+Integrated support for Bosch Indego mowers supported on https://github.com/jm-73/Indego
 
 ## Installation
+
+First install integration from https://github.com/jm-73/Indego
+
+https://github.com/jm-73/Indego
 
 Manually add [bosch-indego-card.js](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/bosch-indego-card.js)
 to your `<config>/www/` folder and add the link to the resource file (Manage Resource files menu) :
@@ -20,6 +25,7 @@ url: /local/bosch-indego-card.js?v=1.0.0
 ```
 Resource type = Javascript file
 
+----- TODO ----
 _OR_ install using [HACS](https://hacs.xyz/) and add this (if in YAML mode):
 ```yaml
 lovelace:
@@ -27,6 +33,7 @@ lovelace:
     - url: /hacsfiles/lovelace-bosch-indego-card/bosch-indego-card.js
       type: module
 ```
+---- TODO ----
 
 The above configuration can be managed directly in the Configuration -> Lovelace Dashboards -> Resources panel when not using YAML mode,
 or added by clicking the "Add to lovelace" button on the HACS dashboard after installing the plugin.
@@ -35,12 +42,54 @@ If you want to use the Bosch S350 background image, download and add
 [img/s350.jpg](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/img/s350.jpg)
 to `<config>/www/img/` or configure your own preferred path.
 
-## Configuration
+## Template Configuration
+
+For the moment you have to create a template because the main integration creates a sensor for each property of your indego.
+And the card needs one entity (the main sensor) with attributes.
+
+Open your sensor YAML file or create a new one if you manage multiple files.
+
+Find all "indego" entities that were created by the indego integration, they should look like sensor.indego_XXXXX_NAMEOFTHEPROPERTY.
+
+In the following template code replace XXXXX by your indego serial number (it should be present in the entity name).
+
+Code :
+
+```yaml
+- platform: template
+  sensors:
+    your_bosch_mower:
+      friendly_name: Bosch Indego S+ 350
+      value_template: states.binary_sensor.indego_XXXXX_online.state
+      attribute_templates:
+        battery: >
+          {{states.sensor.indego_XXXXX_battery_percentage.state}}
+        details: >
+          {{states.sensor.indego_XXXXX_mower_state_detail.state}}
+        status: >
+          {{states.sensor.indego_XXXXX_mower_state.state}} / {{states.sensor.indego_XXXXX_mower_state_detail.state}}
+        connection: >
+          {{states.binary_sensor.indego_XXXXX_online.state}}
+        lawn_mowed: >
+          {{states.sensor.indego_XXXXX_lawm_mowed.state}}
+        mow_mode: >
+          {{states.sensor.indego_XXXXX_mowing_mode.state}}
+        last_completed: >
+          {{ relative_time(states.sensor.indego_XXXXX_last_completed.state|as_datetime) }}
+        mowtime_total: >
+          {{states.sensor.indego_XXXXX_runtime_total.state}}
+        next_mow: >
+          {{states.sensor.indego_XXXXX_next_mow.state}}
+```
+
+Check if your Hass configuration is valid and reload template entitys (There is an option below "Reload scripts", you don't have to reload all Home-assistant)
+
+## Card Configuration
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | type | string | **Required** | `custom:bosch-indego-card`
-| entity | string | **Required** | `vacuum.my_xiaomi_vacuum`
+| entity | string | **Required** | `sensor.your_bosch_mower`
 | name | string/bool | `friendly_name` | Override friendly name (set to `false` to hide)
 | image | string/bool | `false` | Set path/filename of background image (i.e. `/local/img/s350.jpg`)
 | state | [Entity Data](#entity data) | *(see below)* | Set to `false` to hide all states
@@ -75,17 +124,6 @@ See [examples](#examples) on how to customize, hide or add custom buttons/action
 | label | string | | Optional label on hover
 | service_data | object | | Data applied to the service call
 
-### Other vendors
-
-This card was originally written for Xiaomi (Roborock) vacuum cleaners, but version `2.0` and later has added support for some other vendors too.
-If you want any other vendors to be added, feel free to open an issue or contribute directly with a PR.
-
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| vendor | string | `xiaomi` | Supported vendors: `xiaomi`, `xiaomi_mi`, `valetudo`, `ecovacs`, `deebot`, `deebot_slim`, `robovac`, `roomba`, `neato`
-
-*Note: Default attributes and buttons may change for each vendor integration.*
-
 ## Screenshots
 
 ![bosch-indego-card](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/default.png)
@@ -101,30 +139,30 @@ If you want any other vendors to be added, feel free to open an issue or contrib
 Basic configuration:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
+  entity: sensor.my_bosch_mower
 ```
 
 ```yaml
 - type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
+  entity: sensor.my_bosch_mower
   image: /local/custom/folder/background.png
-  name: My Vacuum
-  vendor: xiaomi
+  name: My S+ 350
 ```
 
 Hide state, attributes and/or buttons:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
+  entity: sensor.my_bosch_mower
   state: false
   attributes: false
   buttons: false
 ```
 
+---- TODO -----
 Hide specific state values, attributes and/or buttons:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
+  entity: sensor.my_bosch_mower
   state:
     mode: false
   attributes:
@@ -135,66 +173,11 @@ Hide specific state values, attributes and/or buttons:
     locate: false
 ``` 
 
-Customize specific state values, attributes and/or buttons:
-```yaml
-- type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
-  state:
-    status:
-      key: state
-    mode:
-      icon: mdi:robot-vacuum
-      label: 'Fan speed: '
-      unit: 'percent'
-  attributes:
-    main_brush:
-      key: component_main_brush
-    side_brush:
-      key: component_side_brush
-  buttons:
-    pause:
-      icon: mdi:stop
-      label: Hold
-      service: vacuum.stop
-```
-
-Show default clean spot button:
-```yaml
-- type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
-  buttons:
-    spot:
-      show: true
-```
-
-Add custom attributes:
-```yaml
-- type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
-  attributes:
-    clean_area:
-      key: 'clean_area'
-      label: 'Cleaned area: '
-      unit: ' m2'
-```
-
-Add custom buttons and service calls:
-```yaml
-- type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
-  buttons:
-    new_button:
-      icon: mdi:light-switch
-      label: Custom button!
-      service: light.turn_off
-      service_data:
-        entity_id: light.living_room
-```
-
+---- TODO -----
 Translations:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: vacuum.xiaomi_vacuum_cleaner
+  entity: sensor.my_bosch_mower
   attributes:
     main_brush:
       label: 'Hovedkost: '
@@ -217,15 +200,8 @@ Translations:
 
 ## Disclaimer
 
-This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Xiaomi Corporation,
-or any of its subsidiaries or its affiliates. The official Xiaomi website can be found at https://www.mi.com/global/.
+This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Bosch Corporation,
+or any of its subsidiaries or its affiliates.
 
-## My cards
 
-[bosch-indego-card](https://github.com/xguitoux/lovelace-bosch-indego-card) | 
-[multiple-entity-row](https://github.com/benct/lovelace-multiple-entity-row) | 
-[github-entity-row](https://github.com/benct/lovelace-github-entity-row) | 
-[battery-entity-row](https://github.com/benct/lovelace-battery-entity-row) | 
-[~~attribute-entity-row~~](https://github.com/benct/lovelace-attribute-entity-row)
-
-[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoff.ee/benct)
+[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/xguitoux)
