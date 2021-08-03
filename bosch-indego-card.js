@@ -1,22 +1,34 @@
 /*jshint esversion: 6 */
 ((LitElement) => {
     console.info(
-        '%c BOSCH-INDEGO-CARD %c 0.0.7 ',
-        'color: cyan; background: black; font-weight: bold;',
-        'color: darkblue; background: white; font-weight: bold;',
+        '%c BOSCH-INDEGO-CARD %c 1.0.0 ',
+        'color: lawngreen; background: black; font-weight: bold;',
+        'color: lawngreen; background: white; font-weight: bold;'
     );
 
+    var INDEGO_SENSOR_START = "";
+    var INDEGO_SERIAL = "";
+    var INDEGO_IDENT = "";
+    const UNKNOWN = "unknown";
+    const INDEGO_SERVICE = "indego.command";
+    
     const state = {
         status: {
+            entity_suffix: "mower_state_detail",
+            entity: '',
             key: 'status',
             icon: 'mdi:robot-mower-outline',
         },
         battery: {
+            entity_suffix: "battery_percentage",
+            entity: '',
             key: 'battery',
             unit: '%',
             icon: 'mdi:battery-charging-80',
         },
         lawn_mowed: {
+            entity_suffix: "lawm_mowed",
+            entity: '',
             key: 'lawn_mowed',
             unit: '%',
             icon: 'mdi:grass',
@@ -24,22 +36,32 @@
     };
 
     const attributes = {
-        mow_mode: {
+        mowing_mode: {
+            entity_suffix: "mowing_mode",
+            entity: '',
             key: 'mow_mode',
             label: 'Mow Mode: ',
             unit: '',
         },
         next_mow: {
+            entity_suffix: "next_mow",
+            entity: '',
             key: 'next_mow',
             label: 'Next Mow: ',
             unit: ' ',
+            isDate: true
         },
         last_completed: {
+            entity_suffix: "last_completed",
+            entity: '',
             key: 'last_completed',
             label: 'Last mow completed: ',
             unit: ' ago',
+            isDate: true
         },
         mowtime_total: {
+            entity_suffix: "runtime_total",
+            entity: '',
             key: 'mowtime_total',
             label: 'MowTime total: ',
             unit: ' h',
@@ -50,26 +72,32 @@
         start: {
             label: 'Start',
             icon: 'mdi:play',
-            service: 'indego.command',
-            service_data: 'command:mow',
+            service: INDEGO_SERVICE,
+            service_data: {
+                command: 'mow'
+            },
         },
         pause: {
             label: 'Pause',
             icon: 'mdi:pause',
-            service: 'indego.command',
-            service_data: 'command:pause',
+            service: INDEGO_SERVICE,
+            service_data: {
+                command: 'pause'
+            },
         },
         return: {
             label: 'Return to dock',
             icon: 'mdi:home-map-marker',
-            service: 'indego.command',
-            service_data: 'command:returnToDock',
+            service: INDEGO_SERVICE,
+            service_data: {
+                command: 'returnToDock'
+            },
         }
     };
 
-    const compute = {
-        trueFalse: v => (v === true ? 'Yes' : (v === false ? 'No' : '-'))
-    };
+    // const compute = {
+    //     trueFalse: v => (v === true ? 'Yes' : (v === false ? 'No' : '-'))
+    // };
 
     const html = LitElement.prototype.html;
     const css = LitElement.prototype.css;
@@ -81,7 +109,7 @@
                 _hass: {},
                 config: {},
                 stateObj: {},
-            }
+            };
         }
 
         static get styles() {
@@ -152,28 +180,36 @@
         }
 
         renderAttribute(data) {
-            const computeFunc = data.compute || (v => v);
-            const isValidAttribute = data && data.key in this.stateObj.attributes;
-            const isValidEntityData = data && data.key in this.stateObj;
+            // const computeFunc = data.compute || (v => v);
+            // const isValidAttribute = data && data.key in this.stateObj.attributes;
+            // const isValidEntityData = data && data.key in this.stateObj;
+            const isValidEntity = data && data.entity in this._hass.states;
 
-            const value = isValidAttribute
-                ? computeFunc(this.stateObj.attributes[data.key]) + (data.unit || '')
-                : isValidEntityData
-                    ? computeFunc(this.stateObj[data.key]) + (data.unit || '')
-                    : this._hass.localize('state.default.unavailable');
-            const attribute = html`<div>${data.icon && this.renderIcon(data)}${(data.label || '') + value}</div>`;
+            // const value = isValidAttribute
+            //     ? computeFunc(this.stateObj.attributes[data.key]) + (data.unit || '')
+            //     : isValidEntityData
+            //         ? computeFunc(this.stateObj[data.key]) + (data.unit || '')
+            //         : this._hass.localize('state.default.unavailable');
 
-            const hasDropdown = `${data.key}_list` in this.stateObj.attributes;
+            // date = new Date(stateObj.attributes.year, stateObj.attributes.month - 1, stateObj.attributes.day);
+            //  formatDate(date, this._hass.language);
 
-            return (hasDropdown && (isValidAttribute || isValidEntityData))
-                ? this.renderDropdown(attribute, data.key)
-                : attribute;
+            const value = isValidEntity ?
+                data.hasOwnProperty('isDate') && data.isDate && this._hass.states[data.entity].state != UNKNOWN ?
+                    new Date(this._hass.states[data.entity].state).toLocaleDateString(this._hass.language) :
+                    this._hass.states[data.entity].state + (data.unit || '')
+                : this._hass.localize('state.default.unavailable');
+            
+            if(value.trim() != UNKNOWN) {
+                return  html`<div>${data.icon && this.renderIcon(data)}${(data.label || '') + value}</div>`;
+            }
         }
 
         renderIcon(data) {
-            const icon = (data.key === 'battery_level' && 'battery_icon' in this.stateObj.attributes)
-                ? this.stateObj.attributes.battery_icon
-                : data.icon;
+            // const icon = (data.key === 'battery_level' && 'battery_icon' in this.stateObj.attributes)
+            //     ? this.stateObj.attributes.battery_icon
+            //     : data.icon;
+            const icon  = data.icon;
             return html`<ha-icon icon="${icon}" style="margin-right: 10px; ${this.config.styles.icon}"></ha-icon>`;
         }
 
@@ -187,20 +223,6 @@
                 : null;
         }
 
-        renderDropdown(attribute, key) {
-            const selected = this.stateObj.attributes[key];
-            const list = this.stateObj.attributes[`${key}_list`];
-
-            return html`
-              <paper-menu-button slot="dropdown-trigger" @click="${e => e.stopPropagation()}" style="padding: 0">
-                <paper-button slot="dropdown-trigger">${attribute}</paper-button>
-                <paper-listbox slot="dropdown-content" selected="${list.indexOf(selected)}" @click="${e => this.handleChange(e, key)}">
-                  ${list.map(item => html`<paper-item value="${item}" style="text-shadow: none;">${item}</paper-item>`)}
-                </paper-listbox>
-              </paper-menu-button>
-            `;
-        }
-
         getCardSize() {
             if (this.config.show.name && this.config.show.buttons) return 4;
             if (this.config.show.name || this.config.show.buttons) return 3;
@@ -211,9 +233,63 @@
             return changedProps.has('stateObj');
         }
 
+        find_entities(entityName) {
+
+            const indegoSensorBegin = /^sensor.\D{2,}_\d{9}_/;
+            const serialNumRegex = /_\d{9}_/;
+            const indegoEntityIdentRegex = /^sensor.\D{2,}_/;
+
+            INDEGO_SENSOR_START = entityName.match(indegoSensorBegin);
+            if (INDEGO_SENSOR_START != null) {
+                INDEGO_SENSOR_START = INDEGO_SENSOR_START[0];
+            }  else {
+                throw new Error("Can't find a valid serial number in entity.");
+            }
+
+            INDEGO_SERIAL = entityName.match(serialNumRegex);
+            if (INDEGO_SERIAL != null) {
+                INDEGO_SERIAL = INDEGO_SERIAL[0].substring(1 , 10);
+            }  else {
+                throw new Error("Can't find a valid serial number in entity.");
+            }
+
+            INDEGO_IDENT = entityName.match(indegoEntityIdentRegex);
+            if (INDEGO_IDENT != null) {
+                INDEGO_IDENT = INDEGO_IDENT[0].substring(7 , INDEGO_IDENT[0].length-1);
+            }  else {
+                throw new Error("Can't find a valid indego identifier in entity.");
+            }
+
+            //DEBUG
+            // States loop
+            Object.keys(this.config.state).forEach(key => {
+                // this.config.state[key].entity="sensor."+INDEGO_IDENT+"_"+INDEGO_SERIAL+this.config.state[key].entity_suffix+"_2";
+                if (!this.config.state[key]) {
+
+                    this.config.state[key].entity = INDEGO_SENSOR_START + this.config.state[key].entity_suffix;
+                }
+                
+                // console.log(key, this.config.state[key]);
+            });
+
+            // Attributes loop
+            Object.keys(this.config.attributes).forEach(key => {
+                if(!this.config.attributes[key]) {
+
+                    this.config.attributes[key].entity = INDEGO_SENSOR_START + this.config.attributes[key].entity_suffix;
+                }
+                // this.config.attributes[key].entity="sensor.indego_"+INDEGO_SERIAL+this.config.attributes[key].entity_suffix+"_2";
+                // console.log(key, this.config.attributes[key]);
+            });
+
+            //DEBUG
+            // console.log(this.config.state);
+            // console.log(this.config.attributes);
+        }
+
         setConfig(config) {
             if (!config.entity) throw new Error('Please define an entity.');
-
+            
             this.config = {
                 name: config.name,
                 entity: config.entity,
@@ -233,6 +309,7 @@
                     content: `padding: ${config.name !== false ? '8px' : '16px'} 16px ${config.buttons !== false ? '8px' : '16px'};`,
                 },
             };
+            this.find_entities(config.entity);
         }
 
         set hass(hass) {
@@ -242,10 +319,10 @@
             this._hass = hass;
         }
 
-        handleChange(e, key) {
-            const mode = e.target.getAttribute('value');
-            this.callService(`vacuum.set_${key}`, {entity_id: this.stateObj.entity_id, [key]: mode});
-        }
+        // handleChange(e, key) {
+        //     const mode = e.target.getAttribute('value');
+        //     this.callService(`vacuum.set_${key}`, {entity_id: this.stateObj.entity_id, [key]: mode});
+        // }
 
         callService(service, data = {entity_id: this.stateObj.entity_id}) {
             const [domain, name] = service.split('.');
