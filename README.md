@@ -83,12 +83,16 @@ See [examples](#examples) on how to customize, hide or add custom buttons/action
 
 ## Screenshots
 
+Default card
 ![bosch-indego-card](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/default.png)
 
+No title
 ![bosch-indego-card-no-title-no-image](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/no-title-no-image.png)
 
+With provided image
 ![bosch-indego-card-image](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/with-image.png)
 
+No action buttons
 ![bosch-indego-card-no-buttons](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/no-buttons.png)
 
 ## Examples
