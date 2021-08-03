@@ -8,7 +8,11 @@ based on the work of benct https://github.com/benct/lovelace-xiaomi-vacuum-card
 [![GH-downloads](https://img.shields.io/github/downloads/xguitoux/lovelace-bosch-indego-card/total?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/releases)
 [![GH-last-commit](https://img.shields.io/github/last-commit/xguitoux/lovelace-bosch-indego-card.svg?style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card/commits/master)
 [![GH-code-size](https://img.shields.io/github/languages/code-size/xguitoux/lovelace-bosch-indego-card.svg?color=red&style=flat-square)](https://github.com/xguitoux/lovelace-bosch-indego-card)
-[![hacs_badge](https://img.shields.io/badge/HACS-todo-red.svg?style=flat-square)](https://github.com/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-manual-red.svg?style=flat-square)](https://github.com/hacs)
+
+If you like my work feel free to buy me a cofee
+
+[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/xguitoux)
 
 Integrated support for Bosch Indego mowers supported on https://github.com/jm-73/Indego
 
@@ -39,54 +43,12 @@ If you want to use the Bosch S350 background image, download and add
 [img/s350.jpg](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/img/s350.jpg)
 to `<config>/www/img/` or configure your own preferred path.
 
-## Template Configuration
-
-For the moment you have to create a template because the main integration creates a sensor for each property of your indego.
-And the card needs one entity (the main sensor) with attributes.
-
-Open your sensor YAML file or create a new one if you manage multiple files.
-
-Find all "indego" entities that were created by the indego integration, they should look like sensor.indego_XXXXX_NAMEOFTHEPROPERTY.
-
-In the following template code replace XXXXX by your indego serial number (it should be present in the entity name).
-
-Code :
-
-```yaml
-- platform: template
-  sensors:
-    your_bosch_mower:
-      friendly_name: Bosch Indego S+ 350
-      value_template: states.binary_sensor.indego_XXXXX_online.state
-      attribute_templates:
-        battery: >
-          {{states.sensor.indego_XXXXX_battery_percentage.state}}
-        details: >
-          {{states.sensor.indego_XXXXX_mower_state_detail.state}}
-        status: >
-          {{states.sensor.indego_XXXXX_mower_state.state}} / {{states.sensor.indego_XXXXX_mower_state_detail.state}}
-        connection: >
-          {{states.binary_sensor.indego_XXXXX_online.state}}
-        lawn_mowed: >
-          {{states.sensor.indego_XXXXX_lawm_mowed.state}}
-        mow_mode: >
-          {{states.sensor.indego_XXXXX_mowing_mode.state}}
-        last_completed: >
-          {{ relative_time(states.sensor.indego_XXXXX_last_completed.state|as_datetime) }}
-        mowtime_total: >
-          {{states.sensor.indego_XXXXX_runtime_total.state}}
-        next_mow: >
-          {{states.sensor.indego_XXXXX_next_mow.state}}
-```
-
-Check if your Hass configuration is valid and reload template entitys (There is an option below "Reload scripts", you don't have to reload all Home-assistant)
-
 ## Card Configuration
 
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | type | string | **Required** | `custom:bosch-indego-card`
-| entity | string | **Required** | `sensor.your_bosch_mower`
+| entity | string | **Required** | `sensor.indego_XXXXXXXXX_mower_state`
 | name | string/bool | `friendly_name` | Override friendly name (set to `false` to hide)
 | image | string/bool | `false` | Set path/filename of background image (i.e. `/local/img/s350.jpg`)
 | state | [Entity Data](#entity data) | *(see below)* | Set to `false` to hide all states
@@ -123,7 +85,7 @@ See [examples](#examples) on how to customize, hide or add custom buttons/action
 
 ![bosch-indego-card](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/default.png)
 
-![bosch-indego-card-no-title](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/no-title.png)
+![bosch-indego-card-no-title-no-image](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/no-title-no-image.png)
 
 ![bosch-indego-card-image](https://raw.githubusercontent.com/xguitoux/lovelace-bosch-indego-card/master/examples/with-image.png)
 
@@ -134,12 +96,12 @@ See [examples](#examples) on how to customize, hide or add custom buttons/action
 Basic configuration:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: sensor.my_bosch_mower
+  entity: sensor.indego_XXXXXXXXX_mower_state
 ```
 
 ```yaml
 - type: custom:bosch-indego-card
-  entity: sensor.my_bosch_mower
+  entity: sensor.indego_XXXXXXXXX_mower_state
   image: /local/custom/folder/background.png
   name: My S+ 350
 ```
@@ -147,56 +109,48 @@ Basic configuration:
 Hide state, attributes and/or buttons:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: sensor.my_bosch_mower
+  entity: sensor.indego_XXXXXXXXX_mower_state
   state: false
   attributes: false
   buttons: false
 ```
 
----- TODO -----
-Hide specific state values, attributes and/or buttons:
-```yaml
-- type: custom:bosch-indego-card
-  entity: sensor.my_bosch_mower
-  state:
-    mode: false
-  attributes:
-    main_brush: false
-    side_brush: false
-  buttons:
-    pause: false
-    locate: false
-``` 
-
----- TODO -----
 Translations:
 ```yaml
 - type: custom:bosch-indego-card
-  entity: sensor.my_bosch_mower
+  entity: sensor.indego_XXXXXXXXX_mower_state
   attributes:
-    main_brush:
-      label: 'Hovedkost: '
-      unit: ' timer'
-    side_brush:
-      label: 'Sidekost: '
-      unit: ' timer'
-    filter:
-      label: 'Filtere: '
-    sensor:
-      label: 'Sensorer: '
+   mowing_mode:
+     label: 'Mode de tonte: '
+   next_mow:
+     label: 'Prochaine tonte: ' 
+   last_completed:
+     label: 'Dernière tonte: ' 
+   mowtime_total:
+     label: 'Total tonte: '  
   buttons:
     start:
-      label: Start!
+      label: C'est parti !
     pause:
-      label: Stopp!
-    stop:
-      label: Hammertime
+      label: Halte !
+    return:
+      label: A la niche
 ```
+
+Hide specific state values, attributes and/or buttons:
+```yaml
+- type: custom:bosch-indego-card
+  entity: sensor.indego_XXXXXXXXX_mower_state
+  buttons:
+    pause: false
+  attributes:
+    mowing_mode: false
+    mowtime_total: false
+``` 
+
+
 
 ## Disclaimer
 
 This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Bosch Corporation,
 or any of its subsidiaries or its affiliates.
-
-
-[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/xguitoux)
