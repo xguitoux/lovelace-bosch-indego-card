@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 ((LitElement) => {
     console.info(
-        '%c BOSCH-INDEGO-CARD %c 1.0.0 ',
+        '%c BOSCH-INDEGO-CARD %c 1.0.2 ',
         'color: lawngreen; background: black; font-weight: bold;',
         'color: lawngreen; background: white; font-weight: bold;'
     );
@@ -243,39 +243,34 @@
             if (INDEGO_SENSOR_START != null) {
                 INDEGO_SENSOR_START = INDEGO_SENSOR_START[0];
             }  else {
-                throw new Error("Can't find a valid serial number in entity.");
+                throw new Error("INDEGO-CARD : Can't find the sensor name in entity.");
             }
 
             INDEGO_SERIAL = entityName.match(serialNumRegex);
             if (INDEGO_SERIAL != null) {
                 INDEGO_SERIAL = INDEGO_SERIAL[0].substring(1 , 10);
             }  else {
-                throw new Error("Can't find a valid serial number in entity.");
+                throw new Error("INDEGO-CARD : Can't find a valid serial number in entity.");
             }
 
             INDEGO_IDENT = entityName.match(indegoEntityIdentRegex);
             if (INDEGO_IDENT != null) {
                 INDEGO_IDENT = INDEGO_IDENT[0].substring(7 , INDEGO_IDENT[0].length-1);
             }  else {
-                throw new Error("Can't find a valid indego identifier in entity.");
+                throw new Error("INDEGO-CARD : Can't find a valid indego identifier in entity.");
             }
 
-            //DEBUG
             // States loop
             Object.keys(this.config.state).forEach(key => {
-                // this.config.state[key].entity="sensor."+INDEGO_IDENT+"_"+INDEGO_SERIAL+this.config.state[key].entity_suffix+"_2";
-                if (!this.config.state[key]) {
-
+                if (this.config.state[key]) {
                     this.config.state[key].entity = INDEGO_SENSOR_START + this.config.state[key].entity_suffix;
                 }
-                
                 // console.log(key, this.config.state[key]);
             });
 
             // Attributes loop
             Object.keys(this.config.attributes).forEach(key => {
-                if(!this.config.attributes[key]) {
-
+                if(this.config.attributes[key]) {
                     this.config.attributes[key].entity = INDEGO_SENSOR_START + this.config.attributes[key].entity_suffix;
                 }
                 // this.config.attributes[key].entity="sensor.indego_"+INDEGO_SERIAL+this.config.attributes[key].entity_suffix+"_2";
