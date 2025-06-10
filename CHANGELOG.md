@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.3
+
+Corrected bug that doesn't display action buttons on card
+
 ## 1.0.2
 
 Corrected bug that doesn't display infos on card

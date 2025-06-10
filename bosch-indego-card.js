@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 ((LitElement) => {
     console.info(
-        '%c BOSCH-INDEGO-CARD %c 1.0.2 ',
+        '%c BOSCH-INDEGO-CARD %c 1.0.3 ',
         'color: lawngreen; background: black; font-weight: bold;',
         'color: lawngreen; background: white; font-weight: bold;'
     );
