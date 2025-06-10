@@ -1,5 +1,6 @@
 {
   "name": "Bosh Indego mower Card",
   "filename": "bosch-indego-card.js",
-  "render_readme": true
+  "render_readme": true,
+  "content_in_root": false
 }

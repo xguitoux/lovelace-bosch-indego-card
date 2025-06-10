@@ -215,10 +215,11 @@
 
         renderButton(data) {
             return data && data.show !== false
-                ? html`<ha-icon-button
+                ? html`<ha-icon
                     @click="${() => this.callService(data.service, data.service_data)}"
                     title="${data.label || ''}"
-                    style="${this.config.styles.icon}${this.config.styles.button}"><ha-icon icon="${data.icon}"></ha-icon></ha-icon-button>`
+                    icon="${data.icon}"
+                    style="${this.config.styles.icon}${this.config.styles.button}"></ha-icon>`
                 : null;
         }
 
